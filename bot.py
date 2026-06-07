@@ -90,5 +90,20 @@ async def creer_salon(interaction: discord.Interaction, nom: str, type: app_comm
 async def permission_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.MissingPermissions):
         await interaction.response.send_message("🚫 Tu n'as pas les permissions nécessaires.", ephemeral=True)
-
+@bot.event
+async def on_member_join(member: discord.Member):
+    channel = discord.utils.get(member.guild.text_channels, name="♡-𝗁𝗂")
+    if channel:
+        embed = discord.Embed(
+            title="✿ bienvenue ✿",
+            description=(
+                f"Coucou {member.mention} 🌸\n\n"
+                "Bienvenue sur le serveur ! On est trop content de t'avoir parmi nous ✨\n\n"
+                "N'oublie pas de choisir tes rôles 🎀"
+            ),
+            color=discord.Color.from_rgb(255, 182, 193)
+        )
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_footer(text=f"Tu es notre membre #{member.guild.member_count} !")
+        await channel.send(embed=embed)
 bot.run(TOKEN)
