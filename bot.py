@@ -92,7 +92,7 @@ async def permission_error(interaction: discord.Interaction, error):
         await interaction.response.send_message("🚫 Tu n'as pas les permissions nécessaires.", ephemeral=True)
 @bot.event
 async def on_member_join(member: discord.Member):
-    channel = discord.utils.get(member.guild.text_channels, name="♡-𝗁𝗂")
+    channel = member.guild.get_channel(1513118973468868618)
     if channel:
         embed = discord.Embed(
             title="✿ bienvenue ✿",
