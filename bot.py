@@ -18,6 +18,23 @@ async def on_ready():
     await bot.tree.sync()
     print(f"✅ Connecté en tant que {bot.user} (ID: {bot.user.id})")
 
+@bot.event
+async def on_member_join(member: discord.Member):
+    channel = member.guild.get_channel(1513118973468868618)
+    if channel:
+        embed = discord.Embed(
+            title="✿ bienvenue ✿",
+            description=(
+                f"Coucou {member.mention} 🌸\n\n"
+                "Bienvenue sur le serveur ! On est trop content de t'avoir parmi nous ✨\n\n"
+                "N'oublie pas de choisir tes rôles 🎀"
+            ),
+            color=discord.Color.from_rgb(255, 182, 193)
+        )
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_footer(text=f"Tu es notre membre #{member.guild.member_count} !")
+        await channel.send(embed=embed)
+
 @bot.tree.command(name="roles", description="Affiche le panneau de sélection de rôles")
 @app_commands.checks.has_permissions(manage_roles=True)
 async def send_role_panel(interaction: discord.Interaction):
@@ -50,7 +67,7 @@ class RoleButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         member = interaction.user
-        guild  = interaction.guild
+        guild = interaction.guild
         role = discord.utils.get(guild.roles, name=self.role_name)
         if role is None:
             await interaction.response.send_message(
@@ -90,20 +107,5 @@ async def creer_salon(interaction: discord.Interaction, nom: str, type: app_comm
 async def permission_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.MissingPermissions):
         await interaction.response.send_message("🚫 Tu n'as pas les permissions nécessaires.", ephemeral=True)
-@bot.event
-async def on_member_join(member: discord.Member):
-    channel = member.guild.get_channel(1513118973468868618)
-    if channel:
-        embed = discord.Embed(
-            title="✿ bienvenue ✿",
-            description=(
-                f"Coucou {member.mention} 🌸\n\n"
-                "Bienvenue sur le serveur ! On est trop content de t'avoir parmi nous ✨\n\n"
-                "N'oublie pas de choisir tes rôles 🎀"
-            ),
-            color=discord.Color.from_rgb(255, 182, 193)
-        )
-        embed.set_thumbnail(url=member.display_avatar.url)
-        embed.set_footer(text=f"Tu es notre membre #{member.guild.member_count} !")
-        await channel.send(embed=embed)
+
 bot.run(TOKEN)
