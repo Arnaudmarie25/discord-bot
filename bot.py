@@ -20,6 +20,12 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member: discord.Member):
+    # Rôle automatique
+    role = discord.utils.get(member.guild.roles, name="(˶ᵔ ᵕ ᵔ˶)")
+    if role:
+        await member.add_roles(role)
+
+    # Message de bienvenue
     channel = member.guild.get_channel(1513118973468868618)
     if channel:
         embed = discord.Embed(
