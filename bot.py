@@ -35,6 +35,16 @@ async def on_member_join(member: discord.Member):
         embed.set_footer(text=f"Tu es notre membre #{member.guild.member_count} !")
         await channel.send(embed=embed)
 
+@bot.event
+async def on_message(message: discord.Message):
+    if message.author.bot:
+        return
+    for sticker in message.stickers:
+        if sticker.name == "SoTrueBestie":
+            await message.reply("ptdr t ki ?")
+            return
+    await bot.process_commands(message)
+
 @bot.tree.command(name="roles", description="Affiche le panneau de sélection de rôles")
 @app_commands.checks.has_permissions(manage_roles=True)
 async def send_role_panel(interaction: discord.Interaction):
