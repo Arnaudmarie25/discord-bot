@@ -20,12 +20,9 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member: discord.Member):
-    # Rôle automatique
     role = discord.utils.get(member.guild.roles, name="(˶ᵔ ᵕ ᵔ˶)")
     if role:
         await member.add_roles(role)
-
-    # Message de bienvenue
     channel = member.guild.get_channel(1513118973468868618)
     if channel:
         embed = discord.Embed(
@@ -97,6 +94,23 @@ class RoleButton(discord.ui.Button):
             await member.add_roles(role)
             await interaction.response.send_message(f"✅ Rôle **{role.name}** attribué !", ephemeral=True)
 
+@bot.tree.command(name="ban", description="Bannir un membre du serveur")
+@app_commands.describe(membre="Le membre à bannir", raison="Raison du ban")
+@app_commands.checks.has_permissions(ban_members=True)
+async def ban(interaction: discord.Interaction, membre: discord.Member, raison: str = "Aucune raison fournie"):
+    if membre == interaction.user:
+        await interaction.response.send_message("❌ Tu ne peux pas te bannir toi-même !", ephemeral=True)
+        return
+    await membre.ban(reason=raison)
+    await interaction.response.send_message(f"🔨 **{membre.name}** a été banni. Raison : {raison}")
+
+@bot.tree.command(name="supprimer-salon", description="Supprimer un salon")
+@app_commands.describe(salon="Le salon à supprimer")
+@app_commands.checks.has_permissions(manage_channels=True)
+async def supprimer_salon(interaction: discord.Interaction, salon: discord.TextChannel):
+    await interaction.response.send_message(f"🗑️ Salon **{salon.name}** supprimé !", ephemeral=True)
+    await salon.delete()
+
 @bot.tree.command(name="creer-salon", description="Crée un nouveau salon texte ou vocal")
 @app_commands.describe(nom="Nom du salon", type="Texte ou vocal", categorie="Nom de la catégorie (optionnel)")
 @app_commands.choices(type=[
@@ -119,6 +133,8 @@ async def creer_salon(interaction: discord.Interaction, nom: str, type: app_comm
     await interaction.response.send_message(f"✅ Salon **{salon.mention}** créé !", ephemeral=True)
 
 @send_role_panel.error
+@ban.error
+@supprimer_salon.error
 @creer_salon.error
 async def permission_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.MissingPermissions):
