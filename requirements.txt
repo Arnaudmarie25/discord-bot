@@ -1,3 +1,2 @@
-py-cord>=2.6.0
-colorama>=0.4.6
-aiohttp_socks>=0.7.1
+discord.py>=2.3.0
+python-dotenv>=1.0.0
